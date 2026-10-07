@@ -5,6 +5,10 @@ services:
     environment:
       POSTGRES_USER: finance-app-idea
       POSTGRES_PASSWORD: password
+      # Without this, Postgres names the default database after POSTGRES_USER
+      # ("finance-app-idea"), but application.properties connects to "/finance".
+      # Declaring it here is what makes a fresh `docker compose up` reproducible.
+      POSTGRES_DB: finance
       PGDATA: /data/postgres
     volumes:
       - db:/data/postgres

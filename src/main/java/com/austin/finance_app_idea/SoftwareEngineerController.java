@@ -23,5 +23,4 @@ public class SoftwareEngineerController {
             @RequestBody SoftwareEngineer softwareEngineer) {
         softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
     }
-
 }

@@ -11,23 +11,16 @@
 	<groupId>com.austin</groupId>
 	<artifactId>finance-app-idea</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<name>finance-app-idea</name>
+	<description>Double-entry banking transaction API</description>
+
 	<properties>
 		<java.version>21</java.version>
+		<!-- Flyway and Testcontainers versions come from the Spring Boot parent
+		     (Flyway 12.4.0, Testcontainers 2.0.5), so those need no <version>.
+		     springdoc is NOT managed by Boot, so it must be pinned here.
+		     3.x is the Spring Framework 7 / Boot 4 line; 2.8.x only works on Boot 3. -->
+		<springdoc.version>3.1.1</springdoc.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -42,6 +35,37 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Flyway owns the database schema from now on, replacing ddl-auto=create-drop.
+		     THREE artifacts are needed, and leaving any one out fails quietly:
+		       spring-boot-flyway  = Boot's auto-configuration. In Boot 3 this lived in
+		                             the big spring-boot-autoconfigure jar; Boot 4 split
+		                             it into per-integration modules. Without it Flyway
+		                             is on the classpath but never runs - no log lines,
+		                             no error, just an un-migrated database.
+		       flyway-core         = the migration engine itself.
+		       flyway-database-postgresql = since Flyway 10 each database's support
+		                             ships separately. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-flyway</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+
+		<!-- Serves Swagger UI at /swagger-ui.html: a clickable, always-accurate
+		     view of your own API, generated from your controllers. -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
